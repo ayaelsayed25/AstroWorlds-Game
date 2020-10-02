@@ -17,7 +17,7 @@ public class GameOverState extends State{
 	private int score;
 	private int numOfStars;
 	private BufferedImage gameOverImage;
-	private boolean menuMouse = false;
+	private static boolean menuMouse = false;
 	
 	public GameOverState(Game game, Status status) {
 		super(game);
@@ -57,13 +57,19 @@ public class GameOverState extends State{
 			g.drawImage(Media.menu1, 20, 750, 130, 50, null);
 		}
 	
-	public void setMenuMouse(boolean menu)
+	public static void setMenuMouse(boolean menu)
 	{
 		menuMouse = menu;
 	}
-	public boolean getMenuMouse()
+	public static boolean getMenuMouse()
 	{
 		return menuMouse;
+	}
+
+	@Override
+	public String Type() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

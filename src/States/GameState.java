@@ -34,6 +34,8 @@ public class GameState extends State{
 	private static State gameOverState;
 	private static HashMap<String, String> sounds;
 	private static MediaPlayer media;
+	public static int Speed;
+	int direction;
 
 
 	public GameState(Game game,int num_of_hearts) {
@@ -335,6 +337,28 @@ public class GameState extends State{
 	public void setmenu(boolean menu) {
 		this.menu=menu;
 	}
+	
+	public int getDirection() {
+		return direction;
+	}
 
+	public void setDirection(int direction) {
+		this.direction = direction;
+	}
+
+	public int getSpeed() {
+		return Speed;
+	}
+
+	public void setSpeed(int speed) {
+		Speed = speed;
+	}
+
+
+	@Override
+	public String Type() {
+
+		return "GameState";
+	}
 }
 

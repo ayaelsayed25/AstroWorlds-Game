@@ -46,4 +46,5 @@ public abstract class State {
 	public abstract void init();
 	public abstract void refresh();
 	public abstract void draw(Graphics g);
+	public abstract String Type();
 }

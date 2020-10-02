@@ -88,7 +88,11 @@ public class MenuState extends State implements Serializable{
 	public void setexit(boolean exit) {
 		this.exit=exit;
 	}
-	
-	
 
+
+	@Override
+	public String Type() {
+		return "MenuState";
+	}
+	
 }

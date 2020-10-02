@@ -9,7 +9,7 @@ import Game.Utils;
 
 public class Media {
 
-	public static BufferedImage Undo, menu1, menu2, bgOver, Continue, new_game, exit, Continue2, new_game2, exit2, help2, help, battery3,battery2,battery1,battery0,score,planet1, planet2, moon1, moon2, star1, star2, heart, astronaut, alien, bg, bgMenu, ufo,rocket;
+	public static BufferedImage logo,Simple1,Simple2,Medium1,Medium2,Hard1,Hard2, Undo, menu1, menu2, bgOver, Continue, new_game, exit, Continue2, new_game2, exit2, help2, help, battery3,battery2,battery1,battery0,score,planet1, planet2, moon1, moon2, star1, star2, heart, astronaut, alien, bg, bgMenu, ufo,rocket;
 	public static Clip alienOrStack, chooseUndo, game, gameOver, heartSound, menu, shapes, three, undo;
 	//public static AudioInputStream alienOrStackS, chooseUndoS, gameS, gameOverS, heartSoundS, menuS, shapesS, threeS, undoS;
 	public Media()
@@ -45,25 +45,12 @@ public class Media {
 		menu1 = Utils.loadImage("/res/menu.png");
 		menu2 = Utils.loadImage("/res/menu2.png");
 		Undo = Utils.loadImage("/res/undo.png");
-		
-		//DOWNLOAD SOUNDS
-		/*alienOrStack = Utils.loadAudio("/Music/alienOrStack.wav");
-		alienOrStackS = Utils.audioInput;
-		chooseUndo = Utils.loadAudio("/Music/chooseUndo.wav");
-		chooseUndoS = Utils.audioInput;
-		game = Utils.loadAudio("/Music/game.wav");
-		gameS = Utils.audioInput;
-		gameOver = Utils.loadAudio("/Music/gameOver.wav");
-		gameOverS = Utils.audioInput;
-		heartSound = Utils.loadAudio("/Music/heart.wav");
-		heartSoundS = Utils.audioInput;
-		menu = Utils.loadAudio("/Music/menu.wav");
-		menuS = Utils.audioInput;
-		shapes = Utils.loadAudio("/Music/shapes.wav");
-		shapesS = Utils.audioInput;
-		undo = Utils.loadAudio("/Music/undo.wav");
-		undoS = Utils.audioInput;
-		three = Utils.loadAudio("/Music/three.wav");
-		threeS = Utils.audioInput;*/
+		Simple1 =  Utils.loadImage("/res/simple1.png");
+		Simple2 =  Utils.loadImage("/res/simple2.png");
+		Medium1 =  Utils.loadImage("/res/medium1.png");
+		Medium2 =  Utils.loadImage("/res/medium2.png");
+		Hard1 =  Utils.loadImage("/res/hard1.png");
+		Hard2 =  Utils.loadImage("/res/hard2.png");
+		logo = Utils.loadImage("/res/logo.png");
 	}
 }

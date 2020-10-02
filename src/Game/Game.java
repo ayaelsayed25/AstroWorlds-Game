@@ -122,19 +122,22 @@ public class Game implements Runnable, World,Serializable{
 		g.clearRect(0, 0, width, height); //so that the previous position won't show
 		//draw here
 		z++;
-		if(State.getState() == gameState && z%50 ==0 )
+		if(State.getState().Type() == "GameState"   )
 		{
-			try {
-				if(z%1000 == 0) {
-					((GameState) State.getState()).generateHeartUndo();
-
-				}else {
-					int shape1 = GameState.getRandom(0, 7);
-					int shape2 = GameState.getRandom(0, 7);
-					((GameState) State.getState()).generateShapes(shape1,shape2);
-				}
-				
-			} catch (CloneNotSupportedException e) {}
+			int speed = ((GameState) State.getState()).getSpeed();
+			if(z%speed  == 0) {
+				try {
+					if(z%1000 == 0) {
+						((GameState) State.getState()).generateHeartUndo();
+	
+					}else {
+						int shape1 = GameState.getRandom(0, 7);
+						int shape2 = GameState.getRandom(0, 7);
+						((GameState) State.getState()).generateShapes(shape1,shape2);
+					}
+					
+				} catch (CloneNotSupportedException e) {}
+			}
 		}
 		if(State.getState() != null)
 		{
@@ -210,7 +213,7 @@ public class Game implements Runnable, World,Serializable{
 	{
 		return gameState;
 	}
-	public void setgameState(GameState gameState)
+	public void setgameState(State gameState)
 	{
 		this.gameState=gameState;
 	}
