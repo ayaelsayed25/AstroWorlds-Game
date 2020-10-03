@@ -28,7 +28,7 @@ public abstract class State {
 	public static void setState(State s)
 	{
 		state = s;
-		if(state instanceof MenuState || state instanceof LevelsState)
+		if(state instanceof MenuState || state instanceof LevelsState || state instanceof TopTenState)
 		{
 			media.play("/Music/menu.wav", true);
 		}

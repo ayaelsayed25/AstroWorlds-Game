@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
+import javax.swing.JButton;
+import javax.swing.JRadioButton;
+
 import Display.Media;
 import Display.MediaPlayer;
 import Game.Game;
@@ -36,6 +39,7 @@ public class GameState extends State{
 	private static MediaPlayer media;
 	public static int Speed;
 	int direction;
+	private String playerName;
 
 
 	public GameState(Game game,int num_of_hearts) {
@@ -57,6 +61,7 @@ public class GameState extends State{
 		menu=false;
 		sounds = new HashMap<String, String>();
 		media = new MediaPlayer();
+		((Player) player).setName(playerName);
 		init();
 	}
 
@@ -142,10 +147,10 @@ public class GameState extends State{
 	public void generateShapes(int shape1,int shape2) throws CloneNotSupportedException
 	{
 		shape = (Shapes) ShapeFactory.getShape(shape1).clone();
-		shape.setRandom(getRandom(0,3));
+		shape.setRandom(getRandom(0,direction));
 		
 		shaperight = (Shapes) ShapeFactory.getShape(shape2).clone();
-		shaperight.setRandom(getRandom(0,3));
+		shaperight.setRandom(getRandom(0,direction));
 
 		shape.setX(350);shaperight.setX(930);
 		shape.setY(100);shaperight.setY(100);
@@ -308,6 +313,10 @@ public class GameState extends State{
 	public void setplayer (UserControlled player){
 		this .player=player;
 	}
+	public Player getPlayer()
+	{
+		return (Player) player;
+	}
 
 	public void setstart(boolean start) {
 		this.start=start;
@@ -354,6 +363,14 @@ public class GameState extends State{
 		Speed = speed;
 	}
 
+
+	public String getPlayerName() {
+		return playerName;
+	}
+
+	public void setPlayerName(String playerName) {
+		this.playerName = playerName;
+	}
 
 	@Override
 	public String Type() {

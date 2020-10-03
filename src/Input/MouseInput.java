@@ -13,6 +13,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Stack;
 
+import javax.swing.JTextField;
+
 import Game.Game;
 import Objects.Shapes;
 import Objects.Stopwatch;
@@ -20,6 +22,7 @@ import States.GameState;
 import States.LevelsState;
 import States.MenuState;
 import States.State;
+import States.TopTenState;
 import States.levelfactory;
 
 public class MouseInput implements MouseListener,Serializable,MouseMotionListener {
@@ -29,6 +32,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 	private String recFile;
 	private String PlayerFile,HeartsFile,TimeFile;
 	private boolean cont;
+	private String playerName;
 
 	public MouseInput(Game game) {
 		this.game =game;
@@ -38,6 +42,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 		PlayerFile="player.bin";
 		HeartsFile="hearts.bin";
 		TimeFile="time.bin";
+		playerName = "name.bin";
 		cont=false;
 	}
 
@@ -49,32 +54,37 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 	
 	public void mousePressed(MouseEvent e) {
 		
+		
 		Point point = new Point(e.getX(),e.getY());
 		Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		int ScreenH = (int) d.getHeight();
 		int ScreenW = (int) d.getWidth();
 		
 		if(State.getState().Type() == "LevelsState") {
-			Rectangle simple = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) , 400, 150 );
-			Rectangle medium = new Rectangle((int)(ScreenW*0.35) ,  (int)(ScreenH * 0.28) + 150 , 400 , 150);
-			Rectangle hard = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 300 , 400 , 150);
-			
-			if(simple.contains(point)) {
+			Rectangle simple = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) , 400, 140 );
+			Rectangle medium = new Rectangle((int)(ScreenW*0.35) ,   (int)(ScreenH * 0.28) + 150 , 400 , 140);
+			Rectangle hard = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 300 , 400 , 140);
+
+			if(simple.contains(point) && checkName(((LevelsState)State.getState()).getText())) {
 				levelfactory lf = new levelfactory(1, game);
-				State.setState(lf.create());
-				game.setgameState(lf.create());
+				GameState gamestate = (GameState) lf.create();
+				State.setState(gamestate);
+				game.setgameState(gamestate);
 			}
-			if(medium.contains(point)) {
+			if(medium.contains(point) && checkName(((LevelsState)State.getState()).getText())) {
 				levelfactory lf = new levelfactory(2, game);
-				State.setState(lf.create());
-				game.setgameState(lf.create());
+				GameState gamestate = (GameState) lf.create();
+				State.setState(gamestate);
+				game.setgameState(gamestate);
 			}
-			if(hard.contains(point)) {
+			if(hard.contains(point) && checkName(((LevelsState)State.getState()).getText())) {
 				levelfactory lf = new levelfactory(3, game);
-				State.setState(lf.create());
-				game.setgameState(lf.create());
+				GameState gamestate = (GameState) lf.create();
+				State.setState(gamestate);
+				game.setgameState(gamestate);
 			}
 		}
+		
 		if(State.getState().Type() == "GameState")
 		{
 
@@ -92,7 +102,12 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 		{
 			int x=e.getX();
 			int y=e.getY();
-			
+			Rectangle topten = new Rectangle(500, 600, 200, 100 );
+			if(topten.contains(point)) {
+				TopTenState toptenstate = new TopTenState(game);
+				State.setState(toptenstate);
+				game.setgameState(toptenstate);
+			}
 			
 			if(x>=500 && x<=700) {
 				if(y>=400 && y<=500) {
@@ -106,7 +121,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 			
 			
 			if(x>=500 && x<=700) {
-				if(y>=600 && y<=700) {
+				if(y>=700 && y<=800) {
 				   
 				    FileOutputStream fos;
 					try {
@@ -143,12 +158,13 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 					try {
 						fos3 = new FileOutputStream(PlayerFile);
 						ObjectOutputStream oos = new ObjectOutputStream(fos3);
-						int[] position=new int[3];
+						int[] position=new int[5];
 						position[0]=((GameState) game.getgameState()).getplayer().getX();
 						
 					    position[1]=((GameState) game.getgameState()).getplayer().getY();
 					    position[2]=((GameState) game.getgameState()).getstatus().getScore();
-					 
+					    position[3]=((GameState) game.getgameState()).getSpeed();
+					    position[4]=((GameState) game.getgameState()).getDirection();
 						  
 						    
 					    oos.writeObject(position);
@@ -192,6 +208,19 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
+					
+					FileOutputStream fos6;
+					try {
+						fos6 = new FileOutputStream(playerName);
+						ObjectOutputStream oos = new ObjectOutputStream(fos6);
+						String name;
+						name = ((GameState)game.getgameState()).getPlayer().getName() ;
+					    oos.writeObject(name);
+					    oos.close();
+							
+					} catch (Exception e1) {
+						e1.printStackTrace();
+				}
 
 					System.exit(1);	
 				}
@@ -266,7 +295,8 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 							gameState.getplayer().setX(result[0]);
 							gameState.getplayer().setY(result[1]);
 							gameState.getstatus().setScore(result[2]);
-							
+							gameState.setSpeed(result[3]);
+							gameState.setDirection(result[4]);
 							State.setState(gameState);
 							game.setgameState(gameState);
 							
@@ -288,6 +318,21 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 							State.setState(gameState);
 							game.setgameState(gameState);
 							
+							ois.close();
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						FileInputStream fis6;
+						try {
+							fis6 = new FileInputStream(playerName);
+							ObjectInputStream ois = new ObjectInputStream(fis6);
+							String result = (String) ois.readObject();
+			
+							((GameState) game.getgameState()).setPlayerName(result);
+							System.out.println(result);
+							State.setState(gameState);
+							game.setgameState(gameState);
 							ois.close();
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
@@ -438,5 +483,13 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 		// TODO Auto-generated method stub
 		
 	}
+	public boolean checkName(String text)
+	{
+		if(text.equals(""))
+		{
+			return false;
+		}
+		System.out.println(text);
+		return true;
+	}
 }
-	

@@ -9,6 +9,8 @@ public class Player extends UserControlled {
 	
 	private static Player instance;
 	public int score = 0;
+
+	private String name;
 	
 	private Player() {}
 	
@@ -48,4 +50,12 @@ public class Player extends UserControlled {
 				setX(getX() - SPEED);	
 		}
 	}
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 }

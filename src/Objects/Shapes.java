@@ -23,7 +23,7 @@ public class Shapes extends Movable implements Cloneable,Serializable{
 	
 	public void refresh()
 	{
-		int[] arr = {1,-1,0};
+		int[] arr = {0,1,-1};
 		setX(arr[random]+ getX());
 		setY(getY() + 3 );
 		

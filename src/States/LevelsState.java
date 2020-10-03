@@ -1,41 +1,55 @@
 
 package States;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import Display.Media;
 import Game.Game;
 
-public class LevelsState extends State{
+public class LevelsState extends State {
 
 	Game game;
 	Boolean simple ,hard,medium;
-	
+	Rectangle rect = new Rectangle(200,200,250,30);
+	String text = "";
 	public LevelsState(Game game) {
 		super(game);
 		this.game = game;
 		simple = false;
 		hard = false;
 		medium = false;
+		init();
 	}
 	
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
+		game.getFrame().addKeyListener(new KeyAdapter(){
+			  public void keyPressed(KeyEvent e){
+			    text+=e.getKeyChar();
+			  }
+		});
 	}
 
 	@Override
 	public void refresh() {
-		
 	}
 
 	@Override
 	public void draw(Graphics g) {
 		g.drawImage(Media.bgMenu, 0, 0, game.getWidth(), game.getHeight(), null);
 		g.drawImage(Media.logo, 0,30 ,700,400, null);
+		g.drawImage(Media.name, 300, 150, 200, 200, null);
+		//text field : 
+		g.setColor(Color.blue);
+		g.fillRect(rect.x, rect.y, rect.width, rect.height);
+		g.setColor(Color.white);
+		g.drawString(text, rect.x, rect.y+ rect.height);
 		Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 		int ScreenH = (int) d.getHeight();
 		int ScreenW = (int) d.getWidth();
@@ -91,6 +105,10 @@ public class LevelsState extends State{
 	public String Type() {
 		// TODO Auto-generated method stub
 		return "LevelsState";
+	}
+	public String getText()
+	{
+		return text;
 	}
 
 }

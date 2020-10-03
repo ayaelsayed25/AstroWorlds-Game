@@ -18,7 +18,7 @@ import Game.Game;
 public class MenuState extends State implements Serializable{
 
 	private Game game;
-	private boolean cont,start,help,exit,menu;
+	private boolean cont,start,help,exit,menu,topten;
 	
 
 	
@@ -30,6 +30,7 @@ public class MenuState extends State implements Serializable{
 		help=false;
 		exit=false;
 		menu=false;
+		topten = false;
 	}
 
 	@Override
@@ -43,10 +44,10 @@ public class MenuState extends State implements Serializable{
 		g.drawImage(Media.bgMenu, 0, 0, game.getWidth(), game.getHeight(), null);
 	
 	     if(exit)
-	 		g.drawImage(Media.exit2, 500,600, 200,100, null);
+	 		g.drawImage(Media.exit2, 500,700, 200,100, null);
 
 		else
-		g.drawImage(Media.exit, 500,600, 200,100, null);
+		g.drawImage(Media.exit, 500,700, 200,100, null);
 		if(cont) {
 			g.drawImage(Media.Continue2, 500,300, 200,100, null);
 		}
@@ -64,10 +65,10 @@ public class MenuState extends State implements Serializable{
 		else
 			g.drawImage(Media.help, 500,500, 200,100, null);
 			
-			
-		
-		
-		
+		if(topten)
+			g.drawImage(Media.topten1, 500,600, 200,100, null);
+		else
+			g.drawImage(Media.topten, 500,600, 200,100, null);
 	}
 
 	@Override

@@ -4,8 +4,14 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.PriorityQueue;
 
 import Display.Media;
+import Game.Entry;
 import Game.Game;
 import Objects.Status;
 
@@ -17,6 +23,8 @@ public class GameOverState extends State{
 	private int score;
 	private int numOfStars;
 	private BufferedImage gameOverImage;
+	private String playerName;
+	private String Topten;
 	private static boolean menuMouse = false;
 	
 	public GameOverState(Game game, Status status) {
@@ -26,6 +34,38 @@ public class GameOverState extends State{
 		time = status.getTime();
 		score = status.getScore();
 		gameOverImage = Media.bgOver;
+		playerName = ((GameState) game.getgameState()).getPlayerName();
+		Topten = "Topten.bin";
+		saveScoreAndPlayer();
+	}
+
+	private void saveScoreAndPlayer() {
+		FileOutputStream fos = null ;
+		
+		FileInputStream fis;
+		try {
+			fis = new FileInputStream(Topten);
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			PriorityQueue<Entry> top10;
+			if(ois.readObject( ) == null) {
+				fos = new FileOutputStream(Topten);
+				top10 = new PriorityQueue<Entry>();
+			}else {
+				top10 = (PriorityQueue<Entry>) ois.readObject();
+				ois.close();
+			}
+			top10.add(new Entry(Integer.toString( score),playerName));
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+		    oos.writeObject(top10);
+		    oos.close();
+		    Entry e = top10.remove();
+		    System.out.println(e.key + "  "+e.value);
+				
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+		
+		
 		
 	}
 
