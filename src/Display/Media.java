@@ -2,7 +2,6 @@ package Display;
 
 import java.awt.image.BufferedImage;
 
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 
 import Game.Utils;
@@ -11,6 +10,7 @@ public class Media {
 
 	public static BufferedImage topten1, topten, topten4, topten2, name,logo,Simple1,Simple2,Medium1,Medium2,Hard1,Hard2, Undo, menu1, menu2, bgOver, Continue, new_game, exit, Continue2, new_game2, exit2, help2, help, battery3,battery2,battery1,battery0,score,planet1, planet2, moon1, moon2, star1, star2, heart, astronaut, alien, bg, bgMenu, ufo,rocket;
 	public static Clip alienOrStack, chooseUndo, game, gameOver, heartSound, menu, shapes, three, undo;
+	//public static AudioInputStream alienOrStackS, chooseUndoS, gameS, gameOverS, heartSoundS, menuS, shapesS, threeS, undoS;
 	public Media()
 	{
 		//DOWNLOAD IMAGES
