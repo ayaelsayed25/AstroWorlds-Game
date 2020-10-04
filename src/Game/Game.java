@@ -7,7 +7,6 @@ import java.awt.image.BufferStrategy;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import Display.Display;
@@ -15,7 +14,6 @@ import Display.Media;
 import Input.KeyManager;
 import Input.MouseInput;
 import Objects.GameObject;
-import Objects.Player;
 import States.GameState;
 import States.MenuState;
 import States.State;
@@ -46,8 +44,8 @@ public class Game implements Runnable, World,Serializable{
 	private int controlSpeed;
 	private int speed;
 	private String status;
-
-
+	
+	
 	public Game (String title)
 	{
 		this.title = title;
@@ -226,7 +224,6 @@ public class Game implements Runnable, World,Serializable{
 	{
 		return menuState;
 	}
-
 	public Canvas getCanvas()
 	{
 		return display.getCanvas();
@@ -235,5 +232,4 @@ public class Game implements Runnable, World,Serializable{
 	{
 		return display.getFrame();
 	}
-	
 }
