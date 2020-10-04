@@ -9,8 +9,8 @@ public class Player extends UserControlled {
 	
 	private static Player instance;
 	public int score = 0;
-
 	private String name;
+
 	
 	private Player() {}
 	
