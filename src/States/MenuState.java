@@ -1,15 +1,8 @@
 package States;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.Serializable;
-
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.swing.JButton;
-import javax.swing.JLabel;
 
 import Display.Media;
 import Game.Game;
@@ -41,34 +34,46 @@ public class MenuState extends State implements Serializable{
 
 	@Override
 	public void draw(Graphics g) {
+		Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
+		int ScreenH = (int) d.getHeight();
+		int ScreenW = (int) d.getWidth();
 		g.drawImage(Media.bgMenu, 0, 0, game.getWidth(), game.getHeight(), null);
 	
-	     if(exit)
-	 		g.drawImage(Media.exit2, 500,700, 200,100, null);
 
-		else
-		g.drawImage(Media.exit, 500,700, 200,100, null);
 		if(cont) {
-			g.drawImage(Media.Continue2, 500,300, 200,100, null);
+			g.drawImage(Media.Continue2, (int)(ScreenW*0.35) , (int)(ScreenH * 0.28) , 400, 100 , null);
 		}
 		else
-			g.drawImage(Media.Continue, 500,300, 200,100, null);
+			g.drawImage(Media.Continue,  (int)(ScreenW*0.35) , (int)(ScreenH * 0.28) , 400, 100 , null);
 		
 		if(start)
-			g.drawImage(Media.new_game2, 500,400, 200,100, null);
+			g.drawImage(Media.new_game2, (int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 100 , 400 , 100, null);
 			
 		else
-			g.drawImage(Media.new_game, 500,400, 200,100, null);
+			g.drawImage(Media.new_game, (int)(ScreenW*0.35) ,  (int)(ScreenH * 0.28) + 100 , 400 , 100, null);
 		
 		if(help)
-			g.drawImage(Media.help2, 500,500, 200,100, null);
+			g.drawImage(Media.help2, (int)(ScreenW*0.35)+100 , (int)(ScreenH * 0.28) + 200 , 200 , 100, null);
 		else
-			g.drawImage(Media.help, 500,500, 200,100, null);
+			g.drawImage(Media.help, (int)(ScreenW*0.35)+100 , (int)(ScreenH * 0.28) + 200 , 200 , 100, null);
 			
 		if(topten)
-			g.drawImage(Media.topten1, 500,600, 200,100, null);
+			g.drawImage(Media.topten1,(int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 300 , 400 , 100, null);
 		else
-			g.drawImage(Media.topten, 500,600, 200,100, null);
+			g.drawImage(Media.topten, (int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 300 , 400 , 100, null);
+	     if(exit)
+	 		g.drawImage(Media.exit2,(int)(ScreenW*0.35)+100 , (int)(ScreenH * 0.28) + 400 , 200 , 100, null);
+
+		else
+			g.drawImage(Media.exit,(int)(ScreenW*0.35)+100 , (int)(ScreenH * 0.28) + 400 , 200 , 100, null);
+	}
+
+	public boolean isTopten() {
+		return topten;
+	}
+
+	public void setTopten(boolean topten) {
+		this.topten = topten;
 	}
 
 	@Override

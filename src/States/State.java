@@ -1,12 +1,9 @@
 package States;
 
 import java.awt.Graphics;
-import java.io.IOException;
 
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
 
-import Display.Media;
 import Display.MediaPlayer;
 import Game.Game;
 

@@ -1,16 +1,27 @@
 package States;
 
-import java.awt.*;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
-import java.util.*;
-
-import javax.swing.JButton;
-import javax.swing.JRadioButton;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Stack;
 
 import Display.Media;
 import Display.MediaPlayer;
 import Game.Game;
-import Objects.*;
+import Objects.Constant;
+import Objects.Movable;
+import Objects.ObjectGenerator;
+import Objects.Player;
+import Objects.ShapeFactory;
+import Objects.Shapes;
+import Objects.Status;
+import Objects.StatusBar;
+import Objects.Stopwatch;
+import Objects.UserControlled;
 
 public class GameState extends State{
 
@@ -41,10 +52,10 @@ public class GameState extends State{
 	int direction;
 	private String playerName;
 
-
-	public GameState(Game game,int num_of_hearts) {
+	public GameState(Game game,int num_of_hearts,String playerName) {
 		super(game);
 		this.game = game;
+		this.playerName = playerName;
 		backgroundImage = Media.bg;
 		player = Player.getInstance();
 		ufo = new ObjectGenerator();
@@ -378,4 +389,3 @@ public class GameState extends State{
 		return "GameState";
 	}
 }
-

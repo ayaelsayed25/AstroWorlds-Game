@@ -6,10 +6,12 @@ public class levelfactory {
 	
 	int level;
 	Game game;
+	String playerName;
 	
-	public levelfactory(int level, Game game) {
+	public levelfactory(int level, Game game,String playerName) {
 		this.level = level;
 		this.game = game;
+		this.playerName = playerName;
 		
 	}
 	
@@ -18,17 +20,17 @@ public class levelfactory {
 		GameState gamestate ;
 		if(level ==1)
 		{
-			gamestate = new GameState(game, 3);
+			gamestate = new GameState(game, 3,playerName);
 			gamestate.setSpeed(50);
 			gamestate.setDirection(1);
 		}
 		else if(level == 2) 
 		{
-			gamestate = new GameState(game, 3);
+			gamestate = new GameState(game, 3,playerName);
 			gamestate.setSpeed(50);
 			gamestate.setDirection(3);
 		}else {
-			gamestate = new GameState(game, 3);
+			gamestate = new GameState(game, 3,playerName);
 			gamestate.setSpeed(30);
 			gamestate.setDirection(3);
 		}

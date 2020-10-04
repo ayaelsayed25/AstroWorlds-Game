@@ -1,10 +1,13 @@
 package States;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
-import java.io.FileInputStream;
-import java.io.ObjectInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Collections;
 import java.util.PriorityQueue;
+import java.util.Scanner;
 
 import Display.Media;
 import Game.Entry;
@@ -15,6 +18,9 @@ public class TopTenState extends State {
 	private String Topten;
 	private Entry[] arr;
 	private Game game;
+	PriorityQueue<Entry> top10;
+	private int size ;
+	
  	public TopTenState(Game game) {
 		super(game);
 		this.game = game;
@@ -25,22 +31,31 @@ public class TopTenState extends State {
 
 	@Override
 	public void init() {
-		FileInputStream fis;
+		Scanner s1;
 		try {
-			fis = new FileInputStream(Topten);
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			PriorityQueue result = (PriorityQueue) ois.readObject();
-			for(int i=0; i<2; i++)
-			{
-				
-				arr[i] = (Entry) result.remove();
-				System.out.println(arr[i].value);
+			s1 = new Scanner (new File("Topten.txt"));
+			int n =0;
+			while(s1.hasNextLine()) {
+				n++;
+				s1.nextLine();
 			}
-			System.out.println(result.toString());
-			ois.close();
-		} catch (Exception e1) {
-			e1.printStackTrace();
+			s1.close();
+			Scanner s2=new Scanner (new File("Topten.txt"));
+			top10 = new PriorityQueue<Entry>( Collections.reverseOrder());
+			for(int i = 0 ; i < (n/2) ; i++) {
+				top10.add(new Entry(s2.nextLine().toString(),s2.nextLine().toString()));
+			}
+			size = top10.size();
+			s2.close();
+			for(int i = 0 ;i < size ;i++) {
+				arr[i] = top10.remove();
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
+
+
 	}
 
 	@Override
@@ -53,10 +68,14 @@ public class TopTenState extends State {
 	public void draw(Graphics g) {
 		g.drawImage(Media.bgMenu, 0, 0, game.getWidth(), game.getHeight(), null);
 		g.drawImage(Media.topten4, 100, 100, 400, 600, null);
-		for(int i=0; i<2; i++)
+		for(int i = 0; i < size ; i++)
 		{
+			if(i > 9)
+				break;
+			g.setFont(new Font("TimesRoman",Font.ITALIC,40));
 			g.setColor(Color.white);
-			g.drawString(arr[i].value + "   " + arr[i].key , 100 , 200 * (i + 1));
+			g.drawString(arr[i].value + "   " + arr[i].key ,100 , 200 * (i + 1));
+
 		}
 	}
 
