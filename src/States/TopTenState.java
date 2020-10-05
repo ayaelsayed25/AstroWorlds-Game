@@ -89,7 +89,7 @@ public class TopTenState extends State {
 			g.drawString(arr[i].value,575 , 350 + counter);
 			g.drawString(arr[i].key,900 , 350 + counter);
 
-			counter += 70;
+			counter += 40;
 		}
 
 	}
