@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -13,11 +14,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Stack;
 
+import Display.Media;
 import Game.Game;
 import Objects.Shapes;
 import Objects.Stopwatch;
 import States.GameOverState;
 import States.GameState;
+import States.HelpState;
 import States.LevelsState;
 import States.MenuState;
 import States.State;
@@ -55,48 +58,83 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 
 
 		Point point = new Point(e.getX(),e.getY());
-		Dimension d = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
-		int ScreenH = (int) d.getHeight();
-		int ScreenW = (int) d.getWidth();
+		int ScreenH = game.getHeight();
+		int ScreenW = game.getWidth();
 		
 		if(State.getState().Type() == "GameState")
 		{
-
-			int x=e.getX();
-			int y=e.getY();
-			if(x>=100 && x<=300) {
-				if(y>=700 && y<=800) {
-
-					cont=true;
-					State.setState(game.getmenuState());
+			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+			if(menu.contains(point))
+			{
+				cont=true;
+				FileOutputStream fos;
+				try {
+					fos = new FileOutputStream("isOver.bin");
+				    ObjectOutputStream oos = new ObjectOutputStream(fos);
+				    oos.writeBoolean(false);
+				    oos.close();
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
+				((MenuState)game.getmenuState()).setDrawContinue(true);
+				State.setState(game.getmenuState());
 			}
 		}
+		
+		if(State.getState().Type() == "GameOverState")
+		{
+			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+			if(menu.contains(point))
+			{
+				State menuState = new MenuState(game);
+				game.setMenuState(menuState);
+				State.setState(menuState);
+			}
+		}
+		if(State.getState().Type() == "TopTenState")
+		{
+			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+			if(menu.contains(point))
+			{
+				State.setState(game.getmenuState());
+			}
+		}
+		if(State.getState().Type() == "HelpState")
+		{
+			Rectangle menu = new Rectangle((int)(game.getWidth()* TopTenState.XSCALE), (int)(game.getHeight()* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+			if(menu.contains(point))
+			{
+				State.setState(game.getmenuState());
+			}
+		}
+		
 		if(State.getState().Type() == "MenuState")
 		{
-			Rectangle start = new Rectangle( (int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 100 , 400 , 100);
-			Rectangle continu = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) , 400, 100 );
-			Rectangle help = new Rectangle( (int)(ScreenW*0.35)+100 , (int)(ScreenH * 0.28) + 200 , 200 , 100);
-			Rectangle topten = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 300 , 400 , 100 );
-			Rectangle exit = new Rectangle((int)(ScreenW*0.35)+100 , (int)(ScreenH * 0.28) + 400 , 200 , 100 );
+			Rectangle start = new Rectangle( (int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH *MenuState.YSCALE) + 130 , MenuState.WIDTH , MenuState.HEIGHT);
+			Rectangle continu = new Rectangle((int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH * MenuState.YSCALE) , MenuState.WIDTH, MenuState.HEIGHT );
+			Rectangle help = new Rectangle( (int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH * MenuState.YSCALE) + 260 , MenuState.WIDTH , MenuState.HEIGHT);
+			Rectangle topten = new Rectangle((int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH * MenuState.YSCALE) + 390 , MenuState.WIDTH , MenuState.HEIGHT );
+			Rectangle exit = new Rectangle((int)(ScreenW*MenuState.XSCALE), (int)(ScreenH * MenuState.YSCALE) + 520 , MenuState.WIDTH , MenuState.HEIGHT );
 			
 			if(topten.contains(point)) {
 				TopTenState toptenstate = new TopTenState(game);
 				State.setState(toptenstate);
-				game.setgameState(toptenstate);
 			}
 
 			if(start.contains(point)) {
 
 				LevelsState levelstate=new LevelsState(game);
 				State.setState(levelstate);
-				game.setgameState(levelstate);
-
+			}
+			
+			if(help.contains(point))
+			{
+				HelpState helpState = new HelpState(game);
+				State.setState(helpState);
 			}
 
-
 			if(exit.contains(point)) {
-
+				if(cont == true) {
 			    FileOutputStream fos;
 				try {
 					fos = new FileOutputStream(StackFile);
@@ -134,16 +172,11 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 					ObjectOutputStream oos = new ObjectOutputStream(fos3);
 					int[] position=new int[5];
 					position[0]=((GameState) game.getgameState()).getplayer().getX();
-
 				    position[1]=((GameState) game.getgameState()).getplayer().getY();
 				    position[2]=((GameState) game.getgameState()).getstatus().getScore();
 				    position[3]=((GameState) game.getgameState()).getSpeed();
 				    position[4]=((GameState) game.getgameState()).getDirection();
-
-
 				    oos.writeObject(position);
-
-
 				    oos.close();
 
 				} catch (Exception e1) {
@@ -195,17 +228,16 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 				} catch (Exception e1) {
 					e1.printStackTrace();
 			}
-
+				}
+				
 				System.exit(1);	
 			}
-			
-
+			if(!((MenuState)State.getState()).isOver() && (new File("isOver.bin")).exists()) {
 			if(continu.contains(point)) {
 				if(cont) {
 					State.setState(game.getgameState());
 				}
 				else {
-
 					int num_of_hearts=0;
 					FileInputStream fis4;     
 					try {
@@ -226,11 +258,8 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 						fis = new FileInputStream(StackFile);
 						ObjectInputStream ois = new ObjectInputStream(fis);
 						Stack<Shapes>[] result = (Stack<Shapes>[]) ois.readObject();
-
 						gameState.setstack1(result[0]);
 						gameState.setstack2(result[1]);
-						State.setState(gameState);
-						game.setgameState(gameState);
 						ois.close();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -245,9 +274,6 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 
 						gameState.getplayer().setRec1(result[0]);
 						gameState.getplayer().setRec2(result[1]);
-
-						State.setState(gameState);
-						game.setgameState(gameState);
 						ois.close();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -261,16 +287,12 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 						fis3 = new FileInputStream(PlayerFile);
 						ObjectInputStream ois = new ObjectInputStream(fis3);
 						int[] result = (int[]) ois.readObject();
-
-
+						System.out.println(result.toString());
 						gameState.getplayer().setX(result[0]);
 						gameState.getplayer().setY(result[1]);
 						gameState.getstatus().setScore(result[2]);
 						gameState.setSpeed(result[3]);
 						gameState.setDirection(result[4]);
-						State.setState(gameState);
-						game.setgameState(gameState);
-
 						ois.close();
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -285,10 +307,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 						ObjectInputStream ois = new ObjectInputStream(fis5);
 						double result = (double) ois.readObject();
 
-						((GameState) game.getgameState()).setconstant(result);;
-						State.setState(gameState);
-						game.setgameState(gameState);
-
+						gameState.setconstant(result);
 						ois.close();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
@@ -300,44 +319,49 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 						ObjectInputStream ois = new ObjectInputStream(fis6);
 						String result = (String) ois.readObject();
 
-						((GameState) game.getgameState()).setPlayerName(result);
+						gameState.setPlayerName(result);
 						System.out.println(result);
-						State.setState(gameState);
-						game.setgameState(gameState);
 						ois.close();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					game.setgameState(gameState);
+					State.setState(gameState);
 
 				}
 
+			}
 			}
 		}
 
 
 		if(State.getState().Type() == "LevelsState") {
-			Rectangle simple = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) , 400, 140 );
-			Rectangle medium = new Rectangle((int)(ScreenW*0.35) ,   (int)(ScreenH * 0.28) + 150 , 400 , 140);
-			Rectangle hard = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 300 , 400 , 140);
-
+			Rectangle simple = new Rectangle((int)(ScreenW*LevelsState.XSCALE) , (int)(ScreenH * LevelsState.YSCALE) , LevelsState.WIDTH, LevelsState.HEIGHT);
+			Rectangle medium = new Rectangle((int)(ScreenW*LevelsState.XSCALE) , (int)(ScreenH * LevelsState.YSCALE) + 150 , LevelsState.WIDTH, LevelsState.HEIGHT);
+			Rectangle hard = new Rectangle((int)(ScreenW*LevelsState.XSCALE) , (int)(ScreenH * LevelsState.YSCALE) + 300 , LevelsState.WIDTH, LevelsState.HEIGHT);
+			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+			if(menu.contains(point))
+			{
+				State.setState(game.getmenuState());
+			}
 			if(simple.contains(point) && checkName(((LevelsState)State.getState()).getText())) {
 				levelfactory lf = new levelfactory(1, game,((LevelsState)State.getState()).getText());
 				GameState gamestate = (GameState) lf.create();
-				State.setState(gamestate);
 				game.setgameState(gamestate);
+				State.setState(gamestate);
 			}
 			if(medium.contains(point) && checkName(((LevelsState)State.getState()).getText())) {
 				levelfactory lf = new levelfactory(2, game,((LevelsState)State.getState()).getText());
 				GameState gamestate = (GameState) lf.create();
-				State.setState(gamestate);
 				game.setgameState(gamestate);
+				State.setState(gamestate);
 			}
 			if(hard.contains(point) && checkName(((LevelsState)State.getState()).getText())) {
 				levelfactory lf = new levelfactory(3, game,((LevelsState)State.getState()).getText());
 				GameState gamestate = (GameState) lf.create();
-				State.setState(gamestate);
 				game.setgameState(gamestate);
+				State.setState(gamestate);
 			}
 		}
 
@@ -354,10 +378,16 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 		int ScreenW = (int) d.getWidth();
 		
 		if(State.getState().Type() == "LevelsState") {
-			Rectangle simple = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) , 400, 150 );
-			Rectangle medium = new Rectangle((int)(ScreenW*0.35) ,  (int)(ScreenH * 0.28) + 150 , 400 , 150);
-			Rectangle hard = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 300 , 400 , 150);
+			Rectangle simple = new Rectangle((int)(ScreenW*LevelsState.XSCALE) , (int)(ScreenH * LevelsState.YSCALE) , LevelsState.WIDTH, LevelsState.HEIGHT);
+			Rectangle medium = new Rectangle((int)(ScreenW*LevelsState.XSCALE) , (int)(ScreenH * LevelsState.YSCALE) + 150 , LevelsState.WIDTH, LevelsState.HEIGHT);
+			Rectangle hard = new Rectangle((int)(ScreenW*LevelsState.XSCALE) , (int)(ScreenH * LevelsState.YSCALE) + 300 , LevelsState.WIDTH, LevelsState.HEIGHT);
+			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
 			
+			if(menu.contains(point)) {
+				((LevelsState)State.getState()).setMenu(true);
+			}else {
+				((LevelsState)State.getState()).setMenu(false);
+			}
 			if(simple.contains(point)) {
 				((LevelsState)State.getState()).setSimple(true);
 			}else {
@@ -376,11 +406,11 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 		}
 		
 		if( State.getState().Type() == "MenuState") {
-			Rectangle start = new Rectangle( (int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 100 , 400 , 100);
-			Rectangle continu = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) , 400, 100 );
-			Rectangle help = new Rectangle( (int)(ScreenW*0.35)+100 , (int)(ScreenH * 0.28) + 200 , 200 , 100);
-			Rectangle topten = new Rectangle((int)(ScreenW*0.35) , (int)(ScreenH * 0.28) + 300 , 400 , 100 );
-			Rectangle exit = new Rectangle((int)(ScreenW*0.35)+100 , (int)(ScreenH * 0.28) + 400 , 200 , 100 );
+			Rectangle start = new Rectangle( (int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH * MenuState.YSCALE) + 130, MenuState.WIDTH, MenuState.HEIGHT);
+			Rectangle continu = new Rectangle((int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH * MenuState.YSCALE), MenuState.WIDTH, MenuState.HEIGHT);
+			Rectangle help = new Rectangle( (int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH * MenuState.YSCALE) + 260, MenuState.WIDTH, MenuState.HEIGHT);
+			Rectangle topten = new Rectangle((int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH * MenuState.YSCALE) + 390, MenuState.WIDTH, MenuState.HEIGHT );
+			Rectangle exit = new Rectangle((int)(ScreenW*MenuState.XSCALE) , (int)(ScreenH * MenuState.YSCALE) + 520, MenuState.WIDTH, MenuState.HEIGHT );
 				
 				
 			if(continu.contains(point)) {
@@ -416,13 +446,42 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 		}
 		//Menu in GameOver State
 		if(State.getState().Type() == "GameOverState") {
-			Rectangle Menu = new Rectangle(20, 750, 130, 50);
-			
-			if(Menu.contains(point))
-			{
-				((GameOverState) State.getState()).setMenuMouse(true);
+			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+
+			if(menu.contains(point)) {
+				((GameOverState)State.getState()).setMenu(true);
 			}else {
-				((GameOverState) State.getState()).setMenuMouse(false);	
+				((GameOverState)State.getState()).setMenu(false);
+			}
+		}
+		if(State.getState().Type() == "GameState")
+		{
+			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+
+			if(menu.contains(point)) {
+				((GameState)State.getState()).setMenu(true);
+			}else {
+				((GameState)State.getState()).setMenu(false);
+			}
+		}
+		if(State.getState().Type() == "TopTenState")
+		{
+			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+
+			if(menu.contains(point)) {
+				((TopTenState)State.getState()).setMenu(true);
+			}else {
+				((TopTenState)State.getState()).setMenu(false);
+			}
+		}
+		if(State.getState().Type() == "HelpState")
+		{
+			Rectangle menu = new Rectangle((int)(game.getWidth()* TopTenState.XSCALE), (int)(game.getHeight()* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+
+			if(menu.contains(point)) {
+				((HelpState)State.getState()).setMenu(true);
+			}else {
+				((HelpState)State.getState()).setMenu(false);
 			}
 		}
 
@@ -459,9 +518,10 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 	{
 		if(text.equals(""))
 		{
+			LevelsState.isMessage(true);
 			return false;
 		}
-		System.out.println(text);
+		LevelsState.isMessage(false);
 		return true;
 	}
 }

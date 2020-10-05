@@ -1,0 +1,12 @@
+WELCOME TO ASTROWORLDS!
+
+Here is how to play our game :
+Use the keys up, down, left, and right to move the astronaut.
+In order to get points, you need to collect three identical shapes in the stack.
+Stay away from aliens and don't make your stack reach the spaceships
+so you can keep your battery charged.
+To recharge your battery, collect hearts.
+If you want to undo a move, collect undoes, and click on them.
+
+HAVE A NICE GAME!
+

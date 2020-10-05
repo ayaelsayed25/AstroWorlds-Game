@@ -20,6 +20,9 @@ public class TopTenState extends State {
 	private Game game;
 	PriorityQueue<Entry> top10;
 	private int size ;
+	public static final double XSCALE = 0.01, YSCALE = 0.8;
+	public static final int WIDTH = 350, HEIGHT = 150;
+	private boolean menu = false;
 	
  	public TopTenState(Game game) {
 		super(game);
@@ -67,22 +70,38 @@ public class TopTenState extends State {
 	@Override
 	public void draw(Graphics g) {
 		g.drawImage(Media.bgMenu, 0, 0, game.getWidth(), game.getHeight(), null);
-		g.drawImage(Media.topten4, 100, 100, 400, 600, null);
+		if(menu)
+			g.drawImage(Media.menu2, (int)(game.getWidth() * XSCALE), (int)(game.getHeight() * YSCALE), WIDTH, HEIGHT, null);
+		else
+			g.drawImage(Media.menu1, (int)(game.getWidth() * XSCALE), (int)(game.getHeight() * YSCALE), WIDTH, HEIGHT, null);
+		
+		g.drawImage(Media.table, 400, 30, 720, 970, null);
+		g.setFont(new Font(Font.SANS_SERIF,Font.BOLD,40));
+		g.setColor(new Color(1, 28, 109));
+		g.drawString("Name              Score" ,575, 300);
+		int counter = 0;
 		for(int i = 0; i < size ; i++)
 		{
 			if(i > 9)
 				break;
-			g.setFont(new Font("TimesRoman",Font.ITALIC,40));
+			g.setFont(new Font(Font.SANS_SERIF,Font.BOLD,30));
 			g.setColor(Color.white);
-			g.drawString(arr[i].value + "   " + arr[i].key ,100 , 200 * (i + 1));
+			g.drawString(arr[i].value,575 , 350 + counter);
+			g.drawString(arr[i].key,900 , 350 + counter);
 
+			counter += 70;
 		}
+
 	}
 
 	@Override
 	public String Type() {
 		// TODO Auto-generated method stub
-		return null;
+		return "TopTenState";
+	}
+
+	public void setMenu(boolean menu) {
+		this.menu = menu;
 	}
 
 }

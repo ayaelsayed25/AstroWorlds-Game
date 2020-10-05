@@ -5,11 +5,15 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.Stack;
 
 import Display.Media;
 import Game.Game;
+import Objects.Shapes;
 import Objects.Status;
 
 public class GameOverState extends State{
@@ -19,7 +23,8 @@ public class GameOverState extends State{
 	private int score;
 	private BufferedImage gameOverImage;
 	private String playerName;
-	private static boolean menuMouse = false;
+	private boolean menu= false;
+	private String isOverFile = "isOver.bin";
 	
 	public GameOverState(Game game, Status status) {
 		super(game);
@@ -33,7 +38,16 @@ public class GameOverState extends State{
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream(isOverFile);
+		    ObjectOutputStream oos = new ObjectOutputStream(fos);
+		    oos.writeBoolean(true);
+		    oos.close();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+  }
 
 	private void saveScoreAndPlayer() throws IOException {
 		File f = new File("Topten.txt");
@@ -68,19 +82,15 @@ public class GameOverState extends State{
 		g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
 		g.drawString("Time : " + time[0] + " : " + time[1] + " : " + time[2] , 550, 650);
 		g.drawString("Score : " + score, 550, 700);
-		if(menuMouse)
-			g.drawImage(Media.menu2, 20, 750, 130, 50, null);
+		if(menu)
+			g.drawImage(Media.menu2, (int)(game.getWidth() * TopTenState.XSCALE), (int)(game.getHeight() * TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT, null);
 		else
-			g.drawImage(Media.menu1, 20, 750, 130, 50, null);
+			g.drawImage(Media.menu1, (int)(game.getWidth() * TopTenState.XSCALE), (int)(game.getHeight() * TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT, null);
 	}
 	
-	public static void setMenuMouse(boolean menu)
+	public void setMenu(boolean menuB)
 	{
-		menuMouse = menu;
-	}
-	public static boolean getMenuMouse()
-	{
-		return menuMouse;
+		menu = menuB;
 	}
 
 	@Override

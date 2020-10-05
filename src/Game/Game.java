@@ -44,8 +44,6 @@ public class Game implements Runnable, World,Serializable{
 	private int controlSpeed;
 	private int speed;
 	private String status;
-	
-	
 	public Game (String title)
 	{
 		this.title = title;
@@ -224,6 +222,10 @@ public class Game implements Runnable, World,Serializable{
 	{
 		return menuState;
 	}
+	public void setMenuState(State menuState)
+	{
+		this.menuState = menuState;
+	}
 	public Canvas getCanvas()
 	{
 		return display.getCanvas();
@@ -232,4 +234,7 @@ public class Game implements Runnable, World,Serializable{
 	{
 		return display.getFrame();
 	}
+
+
+
 }

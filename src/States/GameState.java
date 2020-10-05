@@ -48,7 +48,7 @@ public class GameState extends State{
 	private static State gameOverState;
 	private static HashMap<String, String> sounds;
 	private static MediaPlayer media;
-	public static int Speed;
+	public int speed;
 	int direction;
 	private String playerName;
 
@@ -100,9 +100,10 @@ public class GameState extends State{
 		g.drawImage(backgroundImage, 0, 0, game.getWidth(), game.getHeight(), null);
 
 		if(menu)
-			g.drawImage(Media.menu2, 100, 700, 100, 100,null);
+			g.drawImage(Media.menu2, (int)(game.getWidth() * TopTenState.XSCALE), (int)(game.getHeight() * TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT, null);
 		else
-			g.drawImage(Media.menu1, 100, 700, 200, 100,null);
+			g.drawImage(Media.menu1, (int)(game.getWidth() * TopTenState.XSCALE), (int)(game.getHeight() * TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT, null);
+	
 		
 		((ObjectGenerator)ufo).draw(g);
 		((ObjectGenerator)uforight).draw(g);
@@ -354,9 +355,6 @@ public class GameState extends State{
 	return constanttime;
 	}
 	
-	public void setmenu(boolean menu) {
-		this.menu=menu;
-	}
 	
 	public int getDirection() {
 		return direction;
@@ -367,11 +365,11 @@ public class GameState extends State{
 	}
 
 	public int getSpeed() {
-		return Speed;
+		return speed;
 	}
 
 	public void setSpeed(int speed) {
-		Speed = speed;
+		this.speed = speed;
 	}
 
 
@@ -388,4 +386,9 @@ public class GameState extends State{
 
 		return "GameState";
 	}
+
+	public void setMenu(boolean menu) {
+		this.menu = menu;
+	}
+	
 }
