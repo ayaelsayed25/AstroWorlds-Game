@@ -12,6 +12,8 @@ import java.util.Stack;
 import Display.Media;
 import Display.MediaPlayer;
 import Game.Game;
+import Momento.CareTaker;
+import Momento.Editor;
 import Objects.Constant;
 import Objects.Movable;
 import Objects.ObjectGenerator;
@@ -51,8 +53,12 @@ public class GameState extends State{
 	public int speed;
 	int direction;
 	private String playerName;
+	static CareTaker undo;
+	static Editor edit;
+	private boolean isUndo;
 
-	public GameState(Game game,int num_of_hearts,String playerName) {
+
+	public GameState(Game game,int num_of_hearts,int num_of_undoes,String playerName) {
 		super(game);
 		this.game = game;
 		this.playerName = playerName;
@@ -63,13 +69,16 @@ public class GameState extends State{
 		shapes = new LinkedList<Shapes>();
 		stack1 = new Stack<Shapes>();
 		stack2 = new Stack<Shapes>();
-		status = new Status(num_of_hearts);
+		status = new Status(num_of_hearts,num_of_undoes);
 		statusbar = new StatusBar(status);
 		status.register(statusbar);
 		iterator = new MyIterator();
 		stopwatch = new Stopwatch();
 		start=false;
 		menu=false;
+		isUndo=false;
+		undo=new CareTaker();
+		 edit=new Editor();
 		sounds = new HashMap<String, String>();
 		media = new MediaPlayer();
 		((Player) player).setName(playerName);
@@ -91,6 +100,10 @@ public class GameState extends State{
 		iterator.refresh(stack1Iter, player);
 		iterator.refresh(stack2Iter, player);
 		time = stopwatch.elapsedTime();
+		if(isUndo) {
+			un();
+		}
+		isUndo=false;
 	}
 
 
@@ -188,9 +201,11 @@ public class GameState extends State{
 				status.decreaseHearts();
 				if(stack == stack1) {
 					player.resetRectLeft();
+					undo.clearundo(true);
 				}
 				else {
 					player.resetRectRight();
+					undo.clearundo(false);
 				}
 				stack.clear();
 			}
@@ -259,8 +274,21 @@ public class GameState extends State{
 		shape.setX(player.getX() + shape.xstack);
 		shape.setY(player.getY() + Movable.YSTACK + shape.getYPlus());
 		stack.add(shape);
+		
+	edit.setScore(status.Score);
+		
+		edit.setShape(null);
+		if(stack==stack1) {
+			edit.setIsRight(true);
+		}
+		else
+			edit.setIsRight(false);
+			
+		undo.add(edit.createState());
 	}
 
+	
+	
 	public static boolean checkScore(Shapes shape, Stack<Shapes> stack)
 	{
 		if(stack.size() >= 2)
@@ -269,15 +297,27 @@ public class GameState extends State{
 			Shapes shape2 = (Shapes) stack.get(stack.size() - 2);
 			if(shape.number == shape1.number && shape2.number == shape1.number)
 			{
+				LinkedList<Shapes> temshapes=new LinkedList<Shapes>();
 				for(int i=0; i<2; i++)
 				{
-					stack.pop();
-					if(stack == stack1)
+				temshapes.add(stack.pop());
+					if(stack == stack1) {
 						player.setRectLeftHeight(Movable.YPLUSINIT * -1);
-					else
+					edit.setIsRight(true);
+					}
+					else {
 						player.setRectRightHeight(Movable.YPLUSINIT * -1);
+					edit.setIsRight(false);
+					}
 				}
+				
+				edit.setScore(status.Score);
+				
 				status.setScore( status.getScore() + 1);
+				
+				edit.setShape(temshapes);
+				
+				undo.add(edit.createState());
 				return true;
 			}
 		}
@@ -391,4 +431,67 @@ public class GameState extends State{
 		this.menu = menu;
 	}
 	
+	
+	
+	
+    public static CareTaker getUndo() {
+		return undo;
+	}
+
+	public static void setUndo(CareTaker undo) {
+		GameState.undo = undo;
+	}
+
+	
+	public boolean isUndo() {
+		return isUndo;
+	}
+
+	public void setUndo(boolean isUndo) {
+		this.isUndo = isUndo;
+	}
+
+	
+	public void un() {
+		if(undo.getHistory().size()!=0) {
+		edit.restore(undo.pop());
+		media.play(sounds.get("undo"), false);
+	
+		if(edit.isIsRight()) {
+			//if(stack1.size()!=0) {
+			if(edit.getShape()==null) {
+			stack1.pop();
+			player.setRectLeftHeight(Movable.YPLUSINIT * -1);}
+			
+			else {
+				for(int i=1;i>=0;i--) {
+				stack1.add(edit.getShape().get(i));
+				player.setRectLeftHeight(Movable.YPLUSINIT);
+				}
+			
+		}
+		}
+		
+		
+			else {
+				//if(stack2.size()!=0) {
+				if(edit.getShape()==null) {
+			         stack2.pop();
+			         player.setRectRightHeight(Movable.YPLUSINIT * -1);}
+				else {
+					for(int i=1;i>=0;i--) {
+					stack2.add(edit.getShape().get(i));
+					player.setRectRightHeight(Movable.YPLUSINIT);
+					}
+				
+				}
+		}
+		
+		
+			getstatus().setScore(edit.getScore());
+			
+		
+		
+		}
+	}
 }

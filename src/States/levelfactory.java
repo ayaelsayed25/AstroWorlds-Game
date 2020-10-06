@@ -20,17 +20,17 @@ public class levelfactory {
 		GameState gamestate ;
 		if(level ==1)
 		{
-			gamestate = new GameState(game, 3,playerName);
+			gamestate = new GameState(game, 3,0,playerName);
 			gamestate.setSpeed(50);
 			gamestate.setDirection(1);
 		}
 		else if(level == 2) 
 		{
-			gamestate = new GameState(game, 3,playerName);
+			gamestate = new GameState(game, 3,0,playerName);
 			gamestate.setSpeed(50);
 			gamestate.setDirection(3);
 		}else {
-			gamestate = new GameState(game, 3,playerName);
+			gamestate = new GameState(game, 3,0,playerName);
 			gamestate.setSpeed(30);
 			gamestate.setDirection(3);
 		}

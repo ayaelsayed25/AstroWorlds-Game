@@ -11,8 +11,9 @@ public class Status implements IStatus{
 	LinkedList<Heart> hearts;
 	LinkedList<Undo> undoes;
 	
-	public Status(int heartsNumber) {
+	public Status(int heartsNumber,int num_of_undoes) {
 		this.heartsNumber=heartsNumber;
+		this.UndoNumber=num_of_undoes;
 		Observer = new StatusBar(this);
 		hearts = new LinkedList<Heart>();
 		for(int i = 0 ;i< heartsNumber ;i++) {
@@ -20,6 +21,10 @@ public class Status implements IStatus{
 			hearts.add(e);
 		}
 		undoes = new LinkedList<Undo>();
+		for(int i = 0 ;i< num_of_undoes ;i++) {
+			Undo e = new Undo(8);
+			undoes.add(e);
+		}
 	}
 	
 
@@ -113,5 +118,14 @@ public class Status implements IStatus{
 	public int[] getTime()
 	{
 		return time;
+	}
+
+	public int getUndoNumber() {
+		return UndoNumber;
+	}
+
+
+	public void setUndoNumber(int undoNumber) {
+		UndoNumber = undoNumber;
 	}
 }

@@ -16,6 +16,7 @@ import java.util.Stack;
 
 import Display.Media;
 import Game.Game;
+import Momento.CareTaker;
 import Objects.Shapes;
 import Objects.Stopwatch;
 import States.GameOverState;
@@ -34,7 +35,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 	private String recFile;
 	private String PlayerFile,HeartsFile,TimeFile;
 	private boolean cont;
-	private String playerName;
+	private String playerName,undo;
 
 	public MouseInput(Game game) {
 		this.game =game;
@@ -45,6 +46,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 		HeartsFile="hearts.bin";
 		TimeFile="time.bin";
 		playerName = "name.bin";
+		undo="undo.bin";
 		cont=false;
 	}
 
@@ -64,6 +66,8 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 		if(State.getState().Type() == "GameState")
 		{
 			Rectangle menu = new Rectangle((int)(ScreenW* TopTenState.XSCALE), (int)(ScreenH* TopTenState.YSCALE), TopTenState.WIDTH, TopTenState.HEIGHT);
+			Rectangle undo = new Rectangle((int)(ScreenW *0.9), (int)(ScreenH*0.85),(int)(ScreenW *0.9)+70, (int)(ScreenH*0.85)+70);
+			
 			if(menu.contains(point))
 			{
 				cont=true;
@@ -77,7 +81,19 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 					e1.printStackTrace();
 				}
 				((MenuState)game.getmenuState()).setDrawContinue(true);
+				((MenuState)game.getmenuState()).setOver(false);
 				State.setState(game.getmenuState());
+			}
+			
+			if(undo.contains(point)) {
+			if(((GameState) game.getgameState()).getstatus().getUndoNumber()>0) {
+					
+					((GameState) game.getgameState()).setUndo(true);
+					((GameState) game.getgameState()).getstatus().decreaseUndoes();
+			
+			}	
+				
+				
 			}
 		}
 		
@@ -89,6 +105,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 				State menuState = new MenuState(game);
 				game.setMenuState(menuState);
 				State.setState(menuState);
+				
 			}
 		}
 		if(State.getState().Type() == "TopTenState")
@@ -125,6 +142,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 
 				LevelsState levelstate=new LevelsState(game);
 				State.setState(levelstate);
+				
 			}
 			
 			if(help.contains(point))
@@ -176,6 +194,7 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 				    position[2]=((GameState) game.getgameState()).getstatus().getScore();
 				    position[3]=((GameState) game.getgameState()).getSpeed();
 				    position[4]=((GameState) game.getgameState()).getDirection();
+				   
 				    oos.writeObject(position);
 				    oos.close();
 
@@ -187,9 +206,10 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 				try {
 					fos4 = new FileOutputStream(HeartsFile);
 				    ObjectOutputStream oos = new ObjectOutputStream(fos4);
-				    int position;
+				    int[] position=new int[2];
 
-				    position=((GameState) game.getgameState()).getstatus().getheartsNumber();
+				    position[0]=((GameState) game.getgameState()).getstatus().getheartsNumber();
+				    position[1]=((GameState) game.getgameState()).getstatus().getUndoNumber();
 					oos.writeObject(position);
 
 
@@ -228,10 +248,31 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 				} catch (Exception e1) {
 					e1.printStackTrace();
 			}
+				
+				FileOutputStream fos7;
+				try {
+					fos7 = new FileOutputStream(undo);
+					ObjectOutputStream oos = new ObjectOutputStream(fos7);
+					CareTaker position;
+					position = ((GameState)game.getgameState()).getUndo();
+					System.out.println(position+"a333333333");
+				    oos.writeObject(position);
+				    oos.close();
+
+				} catch (Exception e1) {
+					e1.printStackTrace();
+			}
+				
+				
+				
+				
+				
 				}
 				
 				System.exit(1);	
 			}
+			
+			
 			if(!((MenuState)State.getState()).isOver() && (new File("isOver.bin")).exists()) {
 			if(continu.contains(point)) {
 				if(cont) {
@@ -239,19 +280,21 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 				}
 				else {
 					int num_of_hearts=0;
+					int num_of_undoes=0;
 					FileInputStream fis4;     
 					try {
 						fis4 = new FileInputStream(HeartsFile);
 						ObjectInputStream ois = new ObjectInputStream(fis4);
-						int result = (int) ois.readObject();
-						num_of_hearts=result;
+						int[] result = (int[]) ois.readObject();
+						num_of_hearts=result[0];
+						num_of_undoes=result[1];
 
 						ois.close();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
 
-					GameState gameState=new GameState(game,num_of_hearts,"");
+					GameState gameState=new GameState(game,num_of_hearts,num_of_undoes,"");
 
 					FileInputStream fis;
 					try {
@@ -321,6 +364,21 @@ public class MouseInput implements MouseListener,Serializable,MouseMotionListene
 
 						gameState.setPlayerName(result);
 						System.out.println(result);
+						ois.close();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+					
+					FileInputStream fis7;
+					try {
+						fis7 = new FileInputStream(undo);
+						ObjectInputStream ois = new ObjectInputStream(fis7);
+						CareTaker result = (CareTaker) ois.readObject();
+
+						gameState.setUndo(result);
+						System.out.println(result+"heloooooooooooooooo");
 						ois.close();
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block

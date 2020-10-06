@@ -122,7 +122,10 @@ public class MenuState extends State implements Serializable{
 	{
 		return isOver;
 	}
-
+	public void setOver(boolean isOver) {
+		this.isOver = isOver;
+	}
+	
 	@Override
 	public String Type() {
 		return "MenuState";
